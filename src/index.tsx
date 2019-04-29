@@ -7,8 +7,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import createStore from './store'
 import rootSaga from './saga'
 import Home from './ui/layout/Home'
-import Products from './ui/layout/Products'
-import Categories from './ui/layout/Categories'
 
 const { store, persistor } = createStore(rootSaga)
 
@@ -19,8 +17,6 @@ class Root extends React.PureComponent {
         <PersistGate loading={null} persistor={persistor}>
           <Router>
             <Route path="/" component={Home} />
-            <Route path="/products" component={Products} />
-            <Route path="/categories" component={Categories} />
           </Router>
         </PersistGate>
       </Provider>

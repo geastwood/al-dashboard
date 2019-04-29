@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'OpenSans';
+  src: url('./asset/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('./asset/RobotoMono-Regular.ttf') format('truetype');
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  box-sizing: content-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'OpenSans';
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li.is-current {
+  background-color: #ececec;
+}
+
+a.button {
+  text-decoration: none;
+}
