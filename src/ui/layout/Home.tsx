@@ -6,10 +6,13 @@ import Footer from '../presentational/Footer'
 import MapChart from './MapChart'
 import * as uiActions from '../action'
 import { connect } from 'react-redux'
-import { getCurrentChart } from '../../store/getter'
+import { getForHomeScreen } from '../../store/getter'
 import Chart from './Chart'
+import { HistoryType } from '../../store/reducer/history'
+import History from '../presentational/History'
 
 type PropTypes = {
+  history: HistoryType[]
   current: {} | null
   onQuery: (query: string) => ReturnType<typeof uiActions.query>
 }
@@ -41,6 +44,7 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
         ...d,
         name: d.city,
       }))
+      console.log('fei', formattedData)
       return <MapChart data={formattedData} />
     }
   }
@@ -49,9 +53,15 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
     return (
       <Container>
         <div style={{ height: '2rem', padding: '1rem' }}>
-          <Typography variant="h4">
+          <p
+            style={{
+              fontFamily: 'Helvetica',
+              fontWeight: '500',
+              fontSize: 24,
+            }}
+          >
             AZ NLQ - Have a conversation with your data.
-          </Typography>
+          </p>
         </div>
         <div
           style={{
@@ -83,7 +93,7 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
           </div>
         </div>
         <Footer>
-          <p>2018 Allianz</p>
+          <p style={{ fontFamily: 'Helvetica' }}>2018 Allianz</p>
         </Footer>
       </Container>
     )
@@ -91,6 +101,6 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
 }
 
 export default connect(
-  getCurrentChart,
+  getForHomeScreen,
   { onQuery: uiActions.query }
 )(Home)

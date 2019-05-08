@@ -1,7 +1,6 @@
 import { fork, take, put } from 'redux-saga/effects'
 import * as uiActions from '../ui/action'
-import fixture from './fixture'
-import { landPlane } from '../store/action'
+import { landPlane, historyAdd } from '../store/action'
 
 function* queryWatcher() {
   while (true) {
@@ -19,32 +18,43 @@ function* queryWatcher() {
       const res = yield fetch(url)
 
       json = yield res.json()
+      const charttype = json.chartype || 'bar'
+
+      const data = JSON.parse(json.data)
+
+      yield put(
+        landPlane(`chart/${encodeURI(query)}`, {
+          charttype,
+          data,
+        })
+      )
+
+      yield put(
+        landPlane(`chart/current`, {
+          charttype,
+          data,
+        })
+      )
+
+      yield put(
+        historyAdd({
+          query,
+          data,
+          updatedTime: new Date().toISOString(),
+        })
+      )
     } catch (e) {
-      json = fixture[url]
+      break
     }
-
-    const charttype = json.chartype || 'bar'
-
-    yield put(
-      landPlane(`chart/${encodeURI(query)}`, {
-        charttype,
-        data: JSON.parse(json.data),
-      })
-    )
-
-    yield put(
-      landPlane(`chart/current`, {
-        charttype,
-        data: JSON.parse(json.data),
-      })
-    )
   }
 }
 
 function* rootSaga() {
   try {
     yield fork(queryWatcher)
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export default rootSaga

@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux'
-import product from './product'
-import category from './category'
+import history from './history'
 import airport from './airport'
 
 const rootReducer = combineReducers({
   airport,
-  product,
-  category,
+  history,
 })
 
 export type AppState = ReturnType<typeof rootReducer>
