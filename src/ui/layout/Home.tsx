@@ -1,105 +1,46 @@
 import * as React from 'react'
 import Container from '../presentational/Container'
-import {
-  Input,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-} from '@material-ui/core'
+import { Input, Typography } from '@material-ui/core'
 import logo from '../../asset/logo.png'
 import Footer from '../presentational/Footer'
-import Chart from '../layout/Chart'
-import { chart } from 'highcharts'
-const rawData = [
-  {
-    name: 'Leben',
-    y: 31,
-    drilldown: 'Leben',
-  },
-  {
-    name: 'KFZ-Haftpflicht',
-    y: 17,
-    drilldown: 'KFZ-Haftpflicht',
-  },
-  {
-    name: 'Hausrat',
-    y: 4,
-    drilldown: 'Hausrat',
-  },
-  {
-    name: 'Reisekranken',
-    y: 4,
-    drilldown: 'Reisekranken',
-  },
-  {
-    name: 'Heilkostenvollversicherung',
-    y: 1,
-    drilldown: 'Heilkostenvollversicherung',
-  },
-  {
-    name: 'Pflegepflichtversicherung',
-    y: 1,
-    drilldown: 'Pflegepflichtversicherung',
-  },
-  {
-    name: 'Immobilien-RS selbstgenutzte Einheiten',
-    y: 1,
-    drilldown: 'Immobilien-RS selbstgenutzte Einheiten',
-  },
-  {
-    name: 'Verkehrs-Rechtsschutz',
-    y: 1,
-    drilldown: 'Verkehrs-Rechtsschutz',
-  },
-  {
-    name: 'Kranken-Zusatzversicherung',
-    y: 1,
-    drilldown: 'Kranken-Zusatzversicherung',
-  },
-  {
-    name: 'Vermögenshaftpflicht',
-    y: 1,
-    drilldown: 'Vermögenshaftpflicht',
-  },
-]
-export default class Home extends React.PureComponent {
-  state = {
-    showChart: false,
-    data: rawData,
-    unchecked: [],
-  }
+import MapChart from './MapChart'
+import * as uiActions from '../action'
+import { connect } from 'react-redux'
+import { getCurrentChart } from '../../store/getter'
 
-  handleChange = event => {
-    const { value } = event.target
-    if (
-      value.includes('average') &&
-      value.includes('claim') &&
-      value.includes('munich')
-    ) {
-      this.setState({ showChart: true })
+type PropTypes = {
+  current: {} | null
+  onQuery: (query: string) => ReturnType<typeof uiActions.query>
+}
+
+type StateTypes = {
+  showChart: boolean
+  current: {} | null
+}
+
+class Home extends React.PureComponent<PropTypes, StateTypes> {
+  handleOnSubmit = event => {
+    if (event.which === 13) {
+      const { value } = event.target
+
+      this.props.onQuery(value)
     }
   }
-  handleSelect = name => event => {
-    const { checked } = event.target
-    if (!checked) {
-      this.setState({
-        unchecked: [...this.state.unchecked, name],
-      })
+
+  renderChart = () => {
+    const { data, charttype } = this.props.current
+    if (charttype === 'bar') {
+      console.log('render bar')
     } else {
-      this.setState({
-        unchecked: this.state.unchecked.filter(unchecked => unchecked !== name),
-      })
+      const formattedData = data.map(d => ({
+        ...d,
+        name: d.city,
+      }))
+      return <MapChart data={formattedData} />
     }
   }
+
   render() {
-    const categories = this.state.data.map(d => d.name)
-
-    console.log(this.state.unchecked)
-    const filterData = this.state.data.filter(
-      d => !this.state.unchecked.includes(d.name)
-    )
-    console.log(filterData.length)
-
     return (
       <Container>
         <div style={{ height: '2rem', padding: '1rem' }}>
@@ -126,23 +67,12 @@ export default class Home extends React.PureComponent {
             <Input
               placeholder="Start typing..."
               fullWidth
-              onChange={this.handleChange}
               inputProps={{
                 'aria-label': 'Description',
               }}
+              onKeyUp={this.handleOnSubmit}
             />
-            {this.state.showChart ? (
-              <div
-                style={{
-                  marginTop: 20,
-                  display: 'flex',
-                  flex: 1,
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Chart data={filterData} />
-              </div>
-            ) : null}
+            {this.props.current !== null ? this.renderChart() : null}
           </div>
         </div>
         <Footer>
@@ -152,3 +82,8 @@ export default class Home extends React.PureComponent {
     )
   }
 }
+
+export default connect(
+  getCurrentChart,
+  { onQuery: uiActions.query }
+)(Home)
