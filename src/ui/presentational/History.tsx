@@ -1,19 +1,33 @@
 import * as React from 'react'
 import { HistoryType } from '../../store/reducer/history'
-import { List, ListItem } from '@material-ui/core'
+import { List, ListItem, Typography, Chip } from '@material-ui/core'
+import { connect } from 'react-redux'
+import { getHistory } from '../../store/getter'
 
 type PropTypes = {
   data: HistoryType[]
+  onClick: any
 }
 
-export default class History extends React.PureComponent<PropTypes> {
+class History extends React.PureComponent<PropTypes> {
   render() {
     return (
-      <List>
-        {this.props.data.map(history => (
-          <ListItem key={history.query}>{history.query}</ListItem>
-        ))}
-      </List>
+      <div>
+        <Typography variant="h6">History:</Typography>
+        <List>
+          {this.props.data.map(history => (
+            <ListItem key={history.query}>
+              <Chip
+                label={history.query}
+                variant="outlined"
+                onClick={() => this.props.onClick(history)}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </div>
     )
   }
 }
+
+export default connect(getHistory)(History)

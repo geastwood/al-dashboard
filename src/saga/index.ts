@@ -1,6 +1,24 @@
 import { fork, take, put } from 'redux-saga/effects'
 import * as uiActions from '../ui/action'
 import { landPlane, historyAdd } from '../store/action'
+import { HistoryType } from '../store/reducer/history'
+
+function* loadHistoryDataWatcher() {
+  while (true) {
+    const action: ReturnType<typeof uiActions.loadHistory> = yield take(
+      uiActions.LOAD_HISTORY_DATA
+    )
+
+    const history: HistoryType = action.payload
+
+    yield put(
+      landPlane(`chart/current`, {
+        charttype: history.charttype,
+        data: history.data,
+      })
+    )
+  }
+}
 
 function* queryWatcher() {
   while (true) {
@@ -39,6 +57,7 @@ function* queryWatcher() {
       yield put(
         historyAdd({
           query,
+          charttype,
           data,
           updatedTime: new Date().toISOString(),
         })
@@ -52,6 +71,7 @@ function* queryWatcher() {
 function* rootSaga() {
   try {
     yield fork(queryWatcher)
+    yield fork(loadHistoryDataWatcher)
   } catch (e) {
     console.log(e)
   }

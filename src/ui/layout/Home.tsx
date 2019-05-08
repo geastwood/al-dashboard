@@ -13,6 +13,7 @@ import History from '../presentational/History'
 
 type PropTypes = {
   history: HistoryType[]
+  onHistoryClick: any
   current: {} | null
   onQuery: (query: string) => ReturnType<typeof uiActions.query>
 }
@@ -44,7 +45,6 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
         ...d,
         name: d.city,
       }))
-      console.log('fei', formattedData)
       return <MapChart data={formattedData} />
     }
   }
@@ -52,7 +52,7 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
   render() {
     return (
       <Container>
-        <div style={{ height: '2rem', padding: '1rem' }}>
+        <div style={{ height: '2rem', padding: '1rem', position: 'relative' }}>
           <p
             style={{
               fontFamily: 'Helvetica',
@@ -76,6 +76,7 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
               textAlign: 'center',
               alignSelf: 'center',
               width: '38rem',
+              position: 'relative',
             }}
           >
             <div style={{ paddingBottom: '3rem' }}>
@@ -89,7 +90,17 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
               }}
               onKeyUp={this.handleOnSubmit}
             />
+
             {this.props.current !== null ? this.renderChart() : null}
+          </div>
+          <div
+            style={{
+              display: 'absolute',
+              top: '2rem',
+              right: '1rem',
+            }}
+          >
+            <History onClick={this.props.onHistoryClick} />
           </div>
         </div>
         <Footer>
@@ -102,5 +113,5 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
 
 export default connect(
   getForHomeScreen,
-  { onQuery: uiActions.query }
+  { onQuery: uiActions.query, onHistoryClick: uiActions.loadHistory }
 )(Home)
