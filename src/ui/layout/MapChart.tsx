@@ -35,7 +35,7 @@ export default class MapChart extends React.PureComponent {
             },
 
             mapNavigation: {
-              enabled: false,
+              enabled: true,
             },
 
             tooltip: {
@@ -63,7 +63,7 @@ export default class MapChart extends React.PureComponent {
                 type: 'mapbubble',
                 clip: false,
                 name: 'Cities',
-                color: 'steelblue',
+                color: 'rgba(4, 56, 129, 0.3)',
                 data: this.props.data,
               },
             ],

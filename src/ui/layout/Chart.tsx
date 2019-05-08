@@ -12,7 +12,7 @@ export default class Chart extends React.PureComponent {
           style={{
             height: 20,
             margin: 5,
-            textAlign: 'right',
+            textAlign: 'right'
           }}
         >
           <BarChartIcon />
