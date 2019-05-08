@@ -7,6 +7,7 @@ import MapChart from './MapChart'
 import * as uiActions from '../action'
 import { connect } from 'react-redux'
 import { getCurrentChart } from '../../store/getter'
+import Chart from './Chart'
 
 type PropTypes = {
   current: {} | null
@@ -30,7 +31,11 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
   renderChart = () => {
     const { data, charttype } = this.props.current
     if (charttype === 'bar') {
-      console.log('render bar')
+      const formattedData = data.map(d => ({
+        name: d.label,
+        y: d.count,
+      }))
+      return <Chart data={formattedData} />
     } else {
       const formattedData = data.map(d => ({
         ...d,
@@ -44,7 +49,9 @@ class Home extends React.PureComponent<PropTypes, StateTypes> {
     return (
       <Container>
         <div style={{ height: '2rem', padding: '1rem' }}>
-          <Typography variant="h4">Appollo Q&A</Typography>
+          <Typography variant="h4">
+            AZ NLQ - Have a conversation with your data.
+          </Typography>
         </div>
         <div
           style={{
